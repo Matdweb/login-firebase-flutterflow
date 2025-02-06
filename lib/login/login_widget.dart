@@ -1,3 +1,4 @@
+import '/auth/firebase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -240,7 +241,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                   children: [
                     FFButtonWidget(
                       onPressed: () async {
-                        context.pushNamed('Home');
+                        GoRouter.of(context).prepareAuthEvent();
+
+                        final user = await authManager.signInWithEmail(
+                          context,
+                          _model.txtEmailTextController.text,
+                          _model.txtPasswordTextController.text,
+                        );
+                        if (user == null) {
+                          return;
+                        }
+
+                        context.goNamedAuth('Home', context.mounted);
                       },
                       text: 'Sign in',
                       options: FFButtonOptions(
@@ -262,8 +274,19 @@ class _LoginWidgetState extends State<LoginWidget> {
                       ),
                     ),
                     FFButtonWidget(
-                      onPressed: () {
-                        print('btnSignUp pressed ...');
+                      onPressed: () async {
+                        GoRouter.of(context).prepareAuthEvent();
+
+                        final user = await authManager.createAccountWithEmail(
+                          context,
+                          _model.txtEmailTextController.text,
+                          _model.txtPasswordTextController.text,
+                        );
+                        if (user == null) {
+                          return;
+                        }
+
+                        context.goNamedAuth('Home', context.mounted);
                       },
                       text: 'Sign up',
                       options: FFButtonOptions(
@@ -297,8 +320,15 @@ class _LoginWidgetState extends State<LoginWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     FFButtonWidget(
-                      onPressed: () {
-                        print('btnGoogle pressed ...');
+                      onPressed: () async {
+                        GoRouter.of(context).prepareAuthEvent();
+                        final user =
+                            await authManager.signInWithGoogle(context);
+                        if (user == null) {
+                          return;
+                        }
+
+                        context.goNamedAuth('Home', context.mounted);
                       },
                       text: 'Google',
                       icon: FaIcon(
